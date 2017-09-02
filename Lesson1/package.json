@@ -1,0 +1,24 @@
+{
+  "name": "lesson1",
+  "version": "1.0.0",
+  "description": "GB NodeJS",
+  "main": "index.js",
+  "dependencies": {
+    "beeper": "^1.1.1",
+    "colors": "^1.1.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OstKost/GB-NodeJS.git"
+  },
+  "author": "Ostrovskiy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OstKost/GB-NodeJS/issues"
+  },
+  "homepage": "https://github.com/OstKost/GB-NodeJS#readme"
+}
