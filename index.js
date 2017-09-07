@@ -1,24 +1,29 @@
-var colors = require('colors')
-var beeper = require('beeper')
+let readline = require('readline');
+var rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-beeper()
-console.log(colors.underline.green('Hello, i\'m a NodeJS app.'))
+function gameStart() {
+    console.log('Орёл или решка? (1 - орел, 2 - решка, 0 - выход)');
+}
 
-var sec = 0;
-var intID = setInterval(function() {
-    console.log(++sec)    
-}, 1000)
+gameStart();
 
-setTimeout(function() {
-    console.log(colors.italic.grey('Loading some stuff..'))    
-}, 5000)
-
-setTimeout(function() {
-    console.log(colors.rainbow('beep beep'))
-    beeper('**')
-}, 10000)
-
-setTimeout(function() {
-    console.log(colors.bold.bgRed('That\'s it.'))
-    clearInterval(intID)
-}, 15000)
+rl.on('line', function (cmd) {
+    let result = Math.random() > 0.5 ? '2' : '1';
+    if (cmd < 1 || cmd > 2) {
+        console.log('Че то не то. Попробуйте еще раз');
+        gameStart();
+    } else if (cmd === '0') {
+        console.log('Спасибо за игру');
+        this.close();
+    } else {
+        if (cmd === result) {
+            console.log('Вы выиграли');
+        } else {
+            console.log('Вы проиграли');
+        }
+        gameStart();
+    }
+})
