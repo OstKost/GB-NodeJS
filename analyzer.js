@@ -6,7 +6,7 @@ if (!file) {
     return;
 }
 
-fs.readFile(file, 'utf8', function (err, data) {
+fs.readFile(file, 'utf8', (err, data) => {
     if (err) {
         console.log('Данных об играх нет');
         return;

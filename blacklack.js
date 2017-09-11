@@ -10,14 +10,13 @@ const cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 const winScore = 21;
 
 function writeLog(string) {
-    fs.appendFile('log_bj.txt', string + '\n', function (err) {
+    fs.appendFile('log_bj.txt', string + '\n',  (err) => {
         if (err) throw err;
     })
 }
 
 function gameStart() {
-    console.log('');
-    console.log(colors.bold.bgGreen('Начинаем игру в Блекджек.'));
+    console.log(colors.bold.yellow.bgBlue('\n Начинаем игру в Блекджек.'));
     let playerScore = 0;
     riseScore(playerScore);
 }
@@ -38,7 +37,7 @@ function checkScore(score) {
         writeLog('Win');
         gameStart();
     } else {
-        rl.question('Еще? ( Yes (any key), No ): ', function (answer) {
+        rl.question('Еще? ( Yes (any key), No ): ',  (answer) => {
             if (/^n/i.test(answer)) {
                 console.log(`Ваш счет ${score}, играет компьютер.`);
                 riseScoreAI(0, score);

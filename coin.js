@@ -6,7 +6,7 @@ const rl = readline.createInterface({
 })
 
 function writeLog(string) {
-    fs.appendFile('log_coin.txt', string + '\n', function (err) {
+    fs.appendFile('log_coin.txt', string + '\n', (err) => {
         if (err) throw err;
     })
 }
@@ -17,7 +17,7 @@ function gameStart() {
 
 gameStart();
 
-rl.on('line', function (cmd) {
+rl.on('line', (cmd) => {
     const result = Math.random() > 0.5 ? '2' : '1';
     if (cmd < 1 || cmd > 2) {
         console.log('Че то не то. Попробуйте еще раз');
