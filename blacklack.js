@@ -79,4 +79,4 @@ function checkScoreAI(score, playerScore) {
 }
 
 // Начнем игру !
-gameStart();
+gameStart()
