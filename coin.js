@@ -1,8 +1,17 @@
 let readline = require('readline');
+let fs = require('fs');
 var rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
+
+function writeLog(string) {
+    fs.appendFile('log_coin.txt', string + '\n', function (err) {
+        if (err) {
+            throw err;
+        }
+    });
+}
 
 function gameStart() {
     console.log('Орёл или решка? (1 - орел, 2 - решка, 0 - выход)');
@@ -21,8 +30,10 @@ rl.on('line', function (cmd) {
     } else {
         if (cmd === result) {
             console.log('Вы выиграли');
+            writeLog('Loss');
         } else {
             console.log('Вы проиграли');
+            writeLog('Win');
         }
         gameStart();
     }

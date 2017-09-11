@@ -4,7 +4,6 @@
   "description": "GB NodeJS",
   "main": "index.js",
   "dependencies": {
-    "beeper": "^1.1.1",
     "colors": "^1.1.2",
     "minimist": "^1.2.0"
   },
