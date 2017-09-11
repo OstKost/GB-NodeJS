@@ -1,18 +1,17 @@
-let readline = require('readline');
-let colors = require('colors');
-let fs = require('fs');
-let rl = readline.createInterface({
+const colors = require('colors');
+const fs = require('fs');
+const readline = require('readline');
+const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 })
 
 const cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+const winScore = 21;
 
 function writeLog(string) {
     fs.appendFile('log_bj.txt', string + '\n', function (err) {
-        if (err) {
-            throw err;
-        }
+        if (err) throw err;
     })
 }
 
@@ -21,54 +20,47 @@ function gameStart() {
     console.log(colors.bold.bgGreen('Начинаем игру в Блекджек.'));
     let playerScore = 0;
     riseScore(playerScore);
-    checkScore(playerScore);
 }
 
 function riseScore(score) {
-    let card = cards[Math.floor(Math.random() * cards.length)];
-    score += card;
+    score += cards[Math.floor(Math.random() * cards.length)];
     console.log(`Текущий счет ${score}`);
     checkScore(score);
 }
 
 function checkScore(score) {
-    if (score > 21) {
+    if (score > winScore) {
         console.log(colors.red(`Перебор. Вы проиграли.`));
         writeLog('Loss');
         gameStart();
-    } else if (score == 21) {
+    } else if (score === winScore) {
         console.log(colors.green(`ОЧКО!. Вы выиграли.`));
         writeLog('Win');
         gameStart();
     } else {
-        rl.question('Еще? ( Yes (or enter), No ): ', function (answer) {
-            if (answer === '' || answer.toLowerCase()[0] === 'y') {
-                riseScore(score);
-            } else if (answer.toLowerCase()[0] === 'n') {
+        rl.question('Еще? ( Yes (any key), No ): ', function (answer) {
+            if (/^n/i.test(answer)) {
                 console.log(`Ваш счет ${score}, играет компьютер.`);
-                gameStartAI(0, score);
-            }
+                riseScoreAI(0, score);
+            } else {
+                riseScore(score);
+            }            
         });
     }
 }
 
-function gameStartAI(enemyScore, playerScore) {
-    riseScoreAI(enemyScore, playerScore);
-}
-
 function riseScoreAI(score, playerScore) {
-    let card = cards[Math.floor(Math.random() * cards.length)];
-    score += card;
+    score += cards[Math.floor(Math.random() * cards.length)];;
     console.log(`Текущий счет компьютера ${score}`);
     checkScoreAI(score, playerScore);
 }
 
 function checkScoreAI(score, playerScore) {
-    if (score > 21) {
+    if (score > winScore) {
         console.log(colors.green(`У компьютера Перебор. Вы победили.`));
         writeLog('Win');
         gameStart();
-    } else if (score == 21) {
+    } else if (score === winScore) {
         console.log(colors.red(`У компьютера ОЧКО!. Вы проиграли.`));
         writeLog('Loss');
         gameStart();
@@ -87,4 +79,5 @@ function checkScoreAI(score, playerScore) {
     }
 }
 
+// Начнем игру !
 gameStart();

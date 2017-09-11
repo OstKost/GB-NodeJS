@@ -3,7 +3,7 @@ let fs = require('fs');
 
 let file = args.file;
 
-if (file === undefined) {
+if (!file) {
     console.log('Введите файл. Пример: "node .\analyzer.js --file log.txt"');
     return;
 }
