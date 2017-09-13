@@ -1,3 +1,5 @@
 node_modules/
 log_bj.txt
 log_coin.txt
+.eslintrc.json
+example.png
