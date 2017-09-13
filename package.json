@@ -4,6 +4,7 @@
   "description": "GB NodeJS",
   "main": "index.js",
   "dependencies": {
+    "asyncawait": "^1.0.6",
     "cheerio": "^1.0.0-rc.2",
     "colors": "^1.1.2",
     "minimist": "^1.2.0",
@@ -17,7 +18,9 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-standard": "^3.0.1"
+    "eslint-plugin-standard": "^3.0.1",
+    "phantom": "^4.0.5",
+    "zombie": "^5.0.7"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
