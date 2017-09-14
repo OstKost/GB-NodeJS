@@ -10,7 +10,7 @@ const cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 const winScore = 21;
 
 function writeLog(string) {
-    fs.appendFile('log_bj.txt', string + '\n',  (err) => {
+    fs.appendFile('./lesson2/log_bj.txt', string + '\n',  (err) => {
         if (err) throw err;
     })
 }

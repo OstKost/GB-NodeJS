@@ -6,7 +6,7 @@ const rl = readline.createInterface({
 })
 
 function writeLog(string) {
-    fs.appendFile('log_coin.txt', string + '\n', (err) => {
+    fs.appendFile('./lesson2/log_coin.txt', string + '\n', (err) => {
         if (err) throw err;
     })
 }
