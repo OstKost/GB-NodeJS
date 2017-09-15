@@ -27,12 +27,16 @@ function errorHandler(err, req, res, next) {
     })
 }
 
-function newsParser(url) {
-    const articles = []
-    request(url, (error, response, html) => {
+function newsParser(req, res, render) {
+    const data = {
+        url: req.body.url,
+        articles: []
+    }
+    request(req.body.url, (error, response, html) => {
         if (!error && response.statusCode === 200) {
             const $ = cheerio.load(html)
             $('.uscontinue .post').each((i, elem) => {
+                if (i > req.body.size) return false
                 const article = {
                     pic: $(elem).find('.wp-post-image').attr('src'),
                     url: $(elem).find('.ptitle a').attr('href'),
@@ -40,27 +44,24 @@ function newsParser(url) {
                     preview: $(elem).find('p').text()
                 }
                 if (article.pic || article.url || article.title || article.preview) {
-                    articles.push(article)
+                    data.articles.push(article)
                 }
             })
         }
+        render(res, data)
     })
-    return articles
 }
 
 app.get('/', (req, res) => {
     res.render('index', {
-        category: ' - Выберите категорию из списка.'
+        url: ' - Выберите категорию из списка.'
     })
 })
 
 app.post('/form_handler', (req, res) => {
-    const articles = newsParser(req.body.url)
-    console.log(articles)
-    res.render('index', {
-        category: req.body.url,
-        artiles: articles,
-        size: req.body.size
+    newsParser(req, res, (response, data) => {
+        // console.log(data)
+        response.render('index', data)
     })
 })
 

@@ -73,15 +73,16 @@
             </div>
             <div>
                 Количество:
-                <input type="number" name="size" id="size" value="20">
+                <input type="number" name="size" id="size" value="5">
             </div>
             <div>
                 <input type="submit" value="Получить новости">
             </div>
         </form>
-        <h3 style="margin-left: 50px;">Новости {{category}}:</h3>
+        <h3 style="margin-left: 50px;">Новости <a href={{url}}>Категория</a>:</h3>
         <ul class="articles">
-            <li>
+            <!-- ТЕСТОВЫЕ ДАННЫЕ -->
+            <!-- <li>
                 <div class="pic">
                     <img src="http://www.novostiit.net/wp-content/uploads/2017/09/Kvant-tele-200x150.jpg.pagespeed.ce.eBeNzVxW4G.jpg" alt="Новость">
                 </div>
@@ -109,7 +110,7 @@
                     7-го сентября 2017 года новый канадский радиотелескоп приступил к “прослушиванию” глубин Вселенной.
                 </div>
                 <hr class="clear">
-            </li>
+            </li> -->
             {{#each articles}}
             <li>
                 <div class="pic">
