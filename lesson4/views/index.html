@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Lesson 4</title>
+    <style>
+        form {
+            display: inline-block;
+            padding: 5px;
+            border: 1px solid grey;
+        }
+
+        form div {
+            padding: 5px;
+            width: 200px;
+        }
+
+        form div input,
+        form div select {
+            width: 100%;
+        }
+
+        .articles li {
+            list-style: none;
+        }
+
+        .articles div {
+            padding: 5px;
+        }
+
+        .articles .pic {
+            width: 200px;
+            float: left;
+        }
+
+        .articles .title a {
+            text-decoration: none;
+            font-weight: bold;
+            color: black;
+        }
+
+        .articles .title a:hover {
+            text-decoration: underline;
+            color: darkblue;
+        }
+
+        .articles .preview {
+            color: darkgrey;
+        }
+
+        .clear {
+            clear: both;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <form action="/form_handler" method="POST">
+            <div>
+                Категория:
+                <select name="url" id="url">
+                    <option disabled>Выберите категорию</option>         
+                    <option value="http://www.novostiit.net/category/novosti" selected>Все новости</option>
+                    <option value="http://www.novostiit.net/category/igry">Игры</option>
+                    <option value="http://www.novostiit.net/category/internet">Интернет</option>
+                    <option value="http://www.novostiit.net/category/tehno">Технологии</option>
+                    <option value="http://www.novostiit.net/category/nauka">Наука</option>
+                </select>
+            </div>
+            <div>
+                Количество:
+                <input type="number" name="size" id="size" value="20">
+            </div>
+            <div>
+                <input type="submit" value="Получить новости">
+            </div>
+        </form>
+        <h3 style="margin-left: 50px;">Новости {{category}}:</h3>
+        <ul class="articles">
+            <li>
+                <div class="pic">
+                    <img src="http://www.novostiit.net/wp-content/uploads/2017/09/Kvant-tele-200x150.jpg.pagespeed.ce.eBeNzVxW4G.jpg" alt="Новость">
+                </div>
+                <div class="title">
+                    <a href="http://www.novostiit.net/sozdan-novyiy-tip-byistrodeystvuyushhey-kvantovoy-pamyati-00055401">
+                        Создан новый тип быстродействующей квантовой памяти
+                    </a>
+                </div>
+                <div class="preview">
+                    Физики из Базельского университета, Швейцария, разработали новый тип быстродействующей квантовой памяти, способной в течение
+                    достаточно длительного промежутка времени “хранить фотоны света”, не разрушая их хрупкое квантовое состояние.
+                </div>
+                <hr class="clear">
+            </li>
+            <li>
+                <div class="pic">
+                    <img src="http://www.novostiit.net/wp-content/uploads/2017/09/chime-tel-200x150.jpg.pagespeed.ce.W2cNhYVxYO.jpg" alt="Новость">
+                </div>
+                <div class="title">
+                    <a href="http://www.novostiit.net/sozdan-novyiy-tip-byistrodeystvuyushhey-kvantovoy-pamyati-00055401">
+                        Новый канадский радиотелескоп приступил к составлению карты Вселенной
+                    </a>
+                </div>
+                <div class="preview">
+                    7-го сентября 2017 года новый канадский радиотелескоп приступил к “прослушиванию” глубин Вселенной.
+                </div>
+                <hr class="clear">
+            </li>
+            {{#each articles}}
+            <li>
+                <div class="pic">
+                    <img src={{this.pic}} alt="Новость">
+                </div>
+                <div class="title">
+                    <a href={{this.url}}>
+                        {{this.title}}
+                    </a>
+                </div>
+                <div class="preview">
+                    {{this.preview}}
+                </div>
+                <hr class="clear">
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+</body>
+
+</html>
