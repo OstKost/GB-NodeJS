@@ -10,13 +10,21 @@ const express = require('express'),
     engines = require('consolidate'),
     bodyParser = require('body-parser'),
     request = require('request'),
-    cheerio = require('cheerio')
+    cheerio = require('cheerio'),
+    cookieSession = require('cookie-session'),
+    cookieParser = require('cookie-parser')
 
 app.engine('html', engines.handlebars)
 app.set('view engine', 'html')
 app.set('views', `${__dirname}/views`)
 app.use(bodyParser.urlencoded({
     extended: true
+}))
+app.use(cookieParser())
+app.set('trust proxy', 1) // trust first proxy
+app.use(cookieSession({
+    name: 'session',
+    keys: ['key1', 'key2']
 }))
 
 function errorHandler(err, req, res, next) {
@@ -27,12 +35,30 @@ function errorHandler(err, req, res, next) {
     })
 }
 
+function chooseUrl(category) {
+    switch (category) {
+        case 'games':
+            return "http://www.novostiit.net/category/igry"
+        case 'internet':
+            return "http://www.novostiit.net/category/internet"
+        case 'tech':
+            return "http://www.novostiit.net/category/tehno"
+        case 'science':
+            return "http://www.novostiit.net/category/nauka"
+        default:
+            return "http://www.novostiit.net/category/novosti"
+    }
+}
+
 function newsParser(req, res, render) {
+    // console.log('url ' + chooseUrl(req.session.category))
     const data = {
-        url: req.body.url,
+        category: req.session.category,
+        size: req.session.size,
+        url: chooseUrl(req.session.category),
         articles: []
     }
-    request(req.body.url, (error, response, html) => {
+    request(data.url, (error, response, html) => {
         if (!error && response.statusCode === 200) {
             const $ = cheerio.load(html)
             $('.uscontinue .post').each((i, elem) => {
@@ -53,12 +79,17 @@ function newsParser(req, res, render) {
 }
 
 app.get('/', (req, res) => {
+    console.log(req.session.views)
     res.render('index', {
-        url: ' - Выберите категорию из списка.'
+        url: '#'
     })
 })
 
 app.post('/form_handler', (req, res) => {
+    // console.log('Cookies: ', req.cokies)
+    req.session.category = req.body.category
+    req.session.size = req.body.size
+    console.log('Cookies session: ', req.session)
     newsParser(req, res, (response, data) => {
         // console.log(data)
         response.render('index', data)

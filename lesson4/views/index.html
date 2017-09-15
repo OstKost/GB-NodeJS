@@ -62,18 +62,18 @@
         <form action="/form_handler" method="POST">
             <div>
                 Категория:
-                <select name="url" id="url">
+                <select name="category" id="category">
                     <option disabled>Выберите категорию</option>         
-                    <option value="http://www.novostiit.net/category/novosti" selected>Все новости</option>
-                    <option value="http://www.novostiit.net/category/igry">Игры</option>
-                    <option value="http://www.novostiit.net/category/internet">Интернет</option>
-                    <option value="http://www.novostiit.net/category/tehno">Технологии</option>
-                    <option value="http://www.novostiit.net/category/nauka">Наука</option>
+                    <option value="all">Все новости</option>
+                    <option value="games">Игры</option>
+                    <option value="internet">Интернет</option>
+                    <option value="tech">Технологии</option>
+                    <option value="science">Наука</option>
                 </select>
             </div>
             <div>
                 Количество:
-                <input type="number" name="size" id="size" value="5">
+                <input type="number" name="size" id="size" value={{size}}>
             </div>
             <div>
                 <input type="submit" value="Получить новости">
