@@ -27,7 +27,7 @@ app.use(cookieSession({
     keys: ['key1', 'key2']
 }))
 
-function errorHandler(err, req, res, next) {
+function errorHandler(err, req, res) {
     console.error(err.message)
     console.error(err.stack)
     res.status(500).render('error_template', {
@@ -50,19 +50,12 @@ function chooseUrl(category) {
     }
 }
 
-function newsParser(req, res, render) {
-    // console.log('url ' + chooseUrl(req.session.category))
-    const data = {
-        category: req.session.category,
-        size: req.session.size,
-        url: chooseUrl(req.session.category),
-        articles: []
-    }
-    request(data.url, (error, response, html) => {
-        if (!error && response.statusCode === 200) {
+function newsParser(data, callback) {
+    request(data.url, (err, res, html) => {
+        if (!err && res.statusCode === 200) {
             const $ = cheerio.load(html)
             $('.uscontinue .post').each((i, elem) => {
-                if (i > req.body.size) return false
+                if (i > data.size) return false
                 const article = {
                     pic: $(elem).find('.wp-post-image').attr('src'),
                     url: $(elem).find('.ptitle a').attr('href'),
@@ -74,25 +67,31 @@ function newsParser(req, res, render) {
                 }
             })
         }
-        render(res, data)
+        callback(err, data)
     })
 }
 
 app.get('/', (req, res) => {
-    console.log(req.session.views)
     res.render('index', {
-        url: '#'
+        url: '#',
+        size: req.session.size || 5
     })
 })
 
 app.post('/form_handler', (req, res) => {
+    // console.log('Cookies session: ', req.session)
     // console.log('Cookies: ', req.cokies)
     req.session.category = req.body.category
     req.session.size = req.body.size
-    console.log('Cookies session: ', req.session)
-    newsParser(req, res, (response, data) => {
-        // console.log(data)
-        response.render('index', data)
+    const data = {
+        category: req.session.category,
+        size: req.session.size,
+        url: chooseUrl(req.session.category),
+        articles: []
+    }
+    newsParser(data, error => {
+        if (!error)
+            res.render('index', data)
     })
 })
 
