@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Lesson 4</title>
+    <style>
+        form {
+            display: inline-block;
+            padding: 5px;
+            border: 1px solid grey;
+        }
+
+        form div {
+            padding: 5px;
+            width: 200px;
+        }
+
+        form div input,
+        form div select {
+            width: 100%;
+        }
+
+        .articles li {
+            list-style: none;
+        }
+
+        .articles div {
+            padding: 5px;
+        }
+
+        .articles .pic {
+            width: 200px;
+            float: left;
+        }
+
+        .articles .title a {
+            text-decoration: none;
+            font-weight: bold;
+            color: black;
+        }
+
+        .articles .title a:hover {
+            text-decoration: underline;
+            color: darkblue;
+        }
+
+        .articles .preview {
+            color: darkgrey;
+        }
+
+        .clear {
+            clear: both;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <form action="/form_handler" method="POST">
+            <div>
+                Категория:
+                <select name="category" id="category">
+                    <option disabled>Выберите категорию</option>         
+                    <option value="all">Все новости</option>
+                    <option value="games">Игры</option>
+                    <option value="internet">Интернет</option>
+                    <option value="tech">Технологии</option>
+                    <option value="science">Наука</option>
+                </select>
+            </div>
+            <div>
+                Количество:
+                <input type="number" name="size" id="size" value={{size}}>
+            </div>
+            <div>
+                <input type="submit" value="Получить новости">
+            </div>
+        </form>
+        <h3 style="margin-left: 50px;">Новости <a href={{url}}>Категория</a>:</h3>
+        <ul class="articles">
+            {{#each articles}}
+            <li>
+                <div class="pic">
+                    <img src={{this.pic}} alt="Новость">
+                </div>
+                <div class="title">
+                    <a href={{this.url}}>
+                        {{this.title}}
+                    </a>
+                </div>
+                <div class="preview">
+                    {{this.preview}}
+                </div>
+                <hr class="clear">
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+</body>
+
+</html>
