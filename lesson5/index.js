@@ -1,5 +1,6 @@
 const express = require('express'),
     app = express(),
+    handlebars = require('handlebars'),
     engines = require('consolidate'),
     bodyParser = require('body-parser'),
     request = require('request'),
@@ -21,12 +22,16 @@ app.use(cookieSession({
     keys: ['key1', 'key2']
 }))
 
+handlebars.registerHelper('ifCond', (v1, v2, options) => {
+    if (v1 === v2) {
+        return options.fn(this);
+    }
+    return options.inverse(this);
+})
+
 function errorHandler(err, req, res) {
     console.error(err.message)
     console.error(err.stack)
-    res.status(500).render('index', {
-        error: err
-    })
 }
 
 app.get('/', (req, res) => {
@@ -34,8 +39,8 @@ app.get('/', (req, res) => {
         res.render('index', {
             err: err,
             list: data
-        })    
-    })    
+        })
+    })
 })
 
 app.post('/add', (req, res) => {
@@ -43,8 +48,26 @@ app.post('/add', (req, res) => {
         res.render('index', {
             err: err,
             list: data
-        })    
-    })  
+        })
+    })
+})
+
+app.get('/complete/:id', (req, res) => {
+    tasks.complete(req.params.id, (err, data) => {
+        res.render('index', {
+            err: err,
+            list: data
+        })
+    })
+})
+
+app.get('/change/:id', (req, res) => {
+    tasks.change(req.params.id, req.query, (err, data) => {
+        res.render('index', {
+            err: err,
+            list: data
+        })
+    })
 })
 
 app.use(errorHandler)
