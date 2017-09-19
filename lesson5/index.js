@@ -10,6 +10,7 @@ const express = require('express'),
     tasks = require('./tasks')
 
 app.engine('html', engines.handlebars)
+app.use(express.static(__dirname))
 app.set('view engine', 'html')
 app.set('views', `${__dirname}/views`)
 app.use(bodyParser.urlencoded({
@@ -53,7 +54,7 @@ app.post('/add', (req, res) => {
 })
 
 app.get('/complete/:id', (req, res) => {
-    tasks.complete(req.params.id, (err, data) => {
+    tasks.complete(req.params.id, req.query, (err, data) => {
         res.render('index', {
             err: err,
             list: data
@@ -63,6 +64,15 @@ app.get('/complete/:id', (req, res) => {
 
 app.get('/change/:id', (req, res) => {
     tasks.change(req.params.id, req.query, (err, data) => {
+        res.render('index', {
+            err: err,
+            list: data
+        })
+    })
+})
+
+app.get('/delete/:id', (req, res) => {
+    tasks.delete(req.params.id, (err, data) => {
         res.render('index', {
             err: err,
             list: data

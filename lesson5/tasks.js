@@ -22,7 +22,7 @@ const Tasks = {
             sql = mysql.format(sql, inserts)
             connection.query(sql, (err, rows) => {                
                 connection.release()
-                Tasks.list(callback) // Можно ли так делать???
+                Tasks.list(callback) // Такая запись верна?
             })
         })
     },
@@ -35,20 +35,20 @@ const Tasks = {
             sql = mysql.format(sql, inserts)
             connection.query(sql, (err, rows) => {                
                 connection.release()
-                Tasks.list(callback) // Можно ли так делать???
+                Tasks.list(callback)
             })
         })        
     },
 
-    complete: (id, callback) => {
+    complete: (id, data, callback) => {
         pool.getConnection((err, connection) => {
             if (err) console.log(err)
-            let sql = "UPDATE ?? SET ?? = ? WHERE ?? = ?"            
-            const inserts = ['tasks', 'status', 1, 'id', id]
+            let sql = "UPDATE ?? SET ?? = ? WHERE ?? = ?"                   
+            const inserts = ['tasks', 'status', data.status == 0 ? 1 : 0, 'id', id]
             sql = mysql.format(sql, inserts)
             connection.query(sql, (err, rows) => {                
                 connection.release()
-                Tasks.list(callback) // Можно ли так делать???
+                Tasks.list(callback)
             })
         })
     },
@@ -59,7 +59,7 @@ const Tasks = {
             const sql = mysql.format("DELETE FROM ?? WHERE ?? = ?", ['tasks', 'id', id])            
             connection.query(sql, (err, rows) => {                
                 connection.release()
-                Tasks.list(callback) // Можно ли так делать???
+                Tasks.list(callback) 
             })
         })
     }

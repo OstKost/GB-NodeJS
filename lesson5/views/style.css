@@ -1,0 +1,41 @@
+.addForm {
+    max-width: 700px;
+}
+
+.addForm div {
+    margin: 3px;
+}
+
+li {
+    list-style: none;
+}
+
+.item {
+    max-width: 900px;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid black;
+}
+.itemInput {
+    width: 80px;
+}
+
+.itemInput,
+.prioritySelect {
+    float: right;
+    margin: 0 3px;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.done {
+    text-decoration: line-through;
+    color: darkgrey;
+}
+
+.clear {
+    clear: both;
+}

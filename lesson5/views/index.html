@@ -5,47 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/views/style.css">
     <title>TODO List</title>
-    <style>
-        .addForm {
-            max-width: 700px;
-        }
-
-        .addForm div {
-            margin: 3px;
-        }
-
-        li {
-            list-style: none;
-        }
-
-        .item {
-            max-width: 700px;
-            margin: 10px;
-            padding: 10px;
-            border: 1px solid black;
-        }
-
-        .itemInput,
-        .prioritySelect {
-            float: right;
-            margin: 0 3px;
-        }
-
-        a {
-            text-decoration: none;
-            color: black;
-        }
-
-        .done {
-            text-decoration: line-through;
-            color: darkgrey;
-        }
-
-        .clear {
-            clear: both;
-        }
-    </style>
 </head>
 
 <body>
@@ -85,9 +46,9 @@
             {{#each list}}
             <li>
                 <div class="item">
-                    <a href="/complete/{{this.id}}" class={{#if this.status}}'done'{{/if}}>{{this.name}}</a>
-                    <input type="button" value="Delete" class="itemInput" onClick="window.location='/complete/{{this.id}}'">
-                    <input type="button" value="Done" class="itemInput" onClick="window.location='/delete/{{this.id}}'">
+                    <a href="/complete/{{this.id}}?status={{this.status}}" class={{#if this.status}}'done'{{/if}}>{{this.name}}</a>
+                    <input type="button" value="Delete" class="itemInput" onClick="window.location='/delete/{{this.id}}'">
+                    <input type="button" value={{#if this.status}}'Resume'{{else}}'Done'{{/if}} class="itemInput" onClick="window.location='/complete/{{this.id}}?status={{this.status}}'">
                     <div class='prioritySelect'>Приоритет '{{this.priority}}':
                         <select name="itemPriority" onChange="window.location='/change/{{this.id}}?priority=' + this.value">                                
                             <option value="1" {{#ifCond this.priority 1}}selected{{/ifCond}}>Не важно</option>
