@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TODO List</title>
+    <style>
+        .addForm {
+            max-width: 700px;
+        }
+
+        .addForm div {
+            margin: 3px;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        .item {
+            max-width: 700px;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid black;
+        }
+
+        .itemInput,
+        .prioritySelect {
+            float: right;
+            margin: 0 3px;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        .done {
+            text-decoration: line-through;
+            color: darkgrey;
+        }
+
+        .clear {
+            clear: both;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="addForm">
+            Добавить новое задание:
+            <form action="/add" method="POST">
+                <div>
+                    Название задачи:
+                    <input type="text" name="name" id="name">
+                </div>
+                <div>
+                    Описание задачи:
+                    <input type="text" name="description" id="description">
+                </div>
+                <div class=''>
+                    Приоритет:
+                    <select name="priority" id="priority">
+                        <option value="1">Не важно</option>
+                        <option value="2">Низкий</option>
+                        <option value="3">Средний</option>
+                        <option value="4">Высокий</option>
+                        <option value="5">Срочно</option>
+                    </select>
+                </div>
+                <div>
+                    <input type="submit" value="Добавить задачу">
+                </div>
+            </form>
+        </div>
+        <hr class="clear">
+        <h1>TODO List:</h1>
+        {{#if err}}
+        <h2>{{err}}</h2>
+        {{/if}}
+        <ul>
+            <li>
+                <div class="item">
+                    <a href="">Тестовое задание 1</a>
+                    <input type="button" value="Delete" class="itemInput">
+                    <input type="button" value="Done" class="itemInput">
+                    <div class='prioritySelect'>Приоритет:
+                        <select name="itemPriority">                                
+                            <option value="1">Не важно</option>
+                            <option value="2">Низкий</option>
+                            <option value="3">Средний</option>
+                            <option value="4">Высокий</option>
+                            <option value="5">Срочно</option>
+                        </select>
+                    </div>
+                </div>
+            </li>
+            {{#each list}}
+            <li>
+                <div class="item">
+                    <a href="" class={{#if this.done}} 'done'{{/if}}>{{this.name}}</a>
+                    <input type="button" value="Delete" class="itemInput">
+                    <input type="button" value="Done" class="itemInput">
+                    <div class='prioritySelect'>Приоритет:
+                        <select name="itemPriority">                                
+                            <option value="1">Не важно</option>
+                            <option value="2">Низкий</option>
+                            <option value="3">Средний</option>
+                            <option value="4">Высокий</option>
+                            <option value="5">Срочно</option>
+                        </select>
+                    </div>
+                </div>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+</body>
+
+</html>

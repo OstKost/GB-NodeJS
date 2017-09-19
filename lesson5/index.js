@@ -1,21 +1,54 @@
-const tasks = require('./tasks')
-const mysql = require('mysql')
+const express = require('express'),
+    app = express(),
+    engines = require('consolidate'),
+    bodyParser = require('body-parser'),
+    request = require('request'),
+    cheerio = require('cheerio'),
+    cookieSession = require('cookie-session'),
+    cookieParser = require('cookie-parser'),
+    tasks = require('./tasks')
 
-const pool = mysql.createPool({
-    host: 'localhost',
-    database: 'todo',
-    user: 'root',
-    password: ''
+app.engine('html', engines.handlebars)
+app.set('view engine', 'html')
+app.set('views', `${__dirname}/views`)
+app.use(bodyParser.urlencoded({
+    extended: true
+}))
+app.use(cookieParser())
+app.set('trust proxy', 1) // trust first proxy
+app.use(cookieSession({
+    name: 'session',
+    keys: ['key1', 'key2']
+}))
+
+function errorHandler(err, req, res) {
+    console.error(err.message)
+    console.error(err.stack)
+    res.status(500).render('index', {
+        error: err
+    })
+}
+
+app.get('/', (req, res) => {
+    tasks.list((err, data) => {
+        res.render('index', {
+            err: err,
+            list: data
+        })    
+    })    
 })
 
-pool.getConnection((err, connection) => {
-    if (err) console.log(err)
-    // используем полученное соединение
-    connection.query('SELECT * FROM tasks', (err, rows) => {
+app.post('/add', (req, res) => {
+    tasks.add(req.body, (err, data) => {
+        res.render('index', {
+            err: err,
+            list: data
+        })    
+    })  
+})
 
-        console.log(rows)
+app.use(errorHandler)
 
-        // возвращаем соединение в пул
-        connection.release()
-    })
+app.listen(3000, function () {
+    console.log('Express server listening on port %s.', this.address().port)
 })
