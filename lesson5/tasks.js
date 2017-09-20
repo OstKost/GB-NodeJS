@@ -1,6 +1,4 @@
-const db = require('./config')
-const pool = db.pool
-const mysql = db.mysql
+const {pool, mysql} = require('./config')
 
 const Tasks = {
     list: (callback) => {
