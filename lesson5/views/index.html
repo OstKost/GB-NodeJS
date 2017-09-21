@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/views/style.css">
+    <title>TODO List</title>
+</head>
+
+<body>
+    <div class="app">
+        <div class="addForm">
+            Добавить новое задание:
+            <form action="/add" method="POST">
+                <div>
+                    Название задачи:
+                    <input type="text" name="name" id="name">
+                </div>
+                <div>
+                    Описание задачи:
+                    <input type="text" name="description" id="description">
+                </div>
+                <div class=''>
+                    Приоритет:
+                    <select name="priority" id="priority">
+                        <option value="1">Не важно</option>
+                        <option value="2">Низкий</option>
+                        <option value="3">Средний</option>
+                        <option value="4">Высокий</option>
+                        <option value="5">Срочно</option>
+                    </select>
+                </div>
+                <div>
+                    <input type="submit" value="Добавить задачу">
+                </div>
+            </form>
+        </div>
+        <hr class="clear">
+        <h1>TODO List:</h1>
+        {{#if err}}
+        <h2>{{err}}</h2>
+        {{/if}}
+        <ul>
+            {{#each list}}
+            <li>
+                <div class="item">
+                    <a href="/complete/{{this.id}}?status={{this.status}}" class={{#if this.status}}'done'{{/if}}>{{this.name}}</a>
+                    <input type="button" value="Delete" class="itemInput" onClick="window.location='/delete/{{this.id}}'">
+                    <input type="button" value={{#if this.status}}'Resume'{{else}}'Done'{{/if}} class="itemInput" onClick="window.location='/complete/{{this.id}}?status={{this.status}}'">
+                    <div class='prioritySelect'>Приоритет '{{this.priority}}':
+                        <select name="itemPriority" onChange="window.location='/change/{{this.id}}?priority=' + this.value">                                
+                            <option value="1" {{#ifCond this.priority 1}}selected{{/ifCond}}>Не важно</option>
+                            <option value="2" {{#ifCond this.priority 2}}selected{{/ifCond}}>Низкий</option>
+                            <option value="3" {{#ifCond this.priority 3}}selected{{/ifCond}}>Средний</option>
+                            <option value="4" {{#ifCond this.priority 4}}selected{{/ifCond}}>Высокий</option>
+                            <option value="5" {{#ifCond this.priority 5}}selected{{/ifCond}}>Срочно</option>
+                        </select>
+                    </div>
+                </div>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+</body>
+
+</html>
