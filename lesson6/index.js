@@ -80,13 +80,13 @@ app.all('/complete/*', needAuthentication)
 app.all('/change/*', needAuthentication)
 
 // Хочу проверить куки и сессии
-app.all('/*', (req, res, next) => {
-    console.dir("req.headers[cookie]: " + req.headers['cookie'])
-    console.dir("req.cookies: " + JSON.stringify(req.cookies))
-    console.dir("req.session: " + JSON.stringify(req.session))
-    console.dir("###")
-    next();
-})
+// app.all('/*', (req, res, next) => {
+//     console.dir("req.headers[cookie]: " + req.headers['cookie'])
+//     console.dir("req.cookies: " + JSON.stringify(req.cookies))
+//     console.dir("req.session: " + JSON.stringify(req.session))
+//     console.dir("###")
+//     next();
+// })
 
 app.get('/', (req, res) => {
     tasks.list((err, data) => {        
