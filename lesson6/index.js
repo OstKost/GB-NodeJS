@@ -4,7 +4,6 @@ const express = require('express'),
     engines = require('consolidate'),
     bodyParser = require('body-parser'),
     request = require('request'),
-    cheerio = require('cheerio'),
     tasks = require('./tasks'),
     users = require('./users'),
     passport = require('passport'),
@@ -21,23 +20,24 @@ app.use(bodyParser.urlencoded({
     extended: true
 }))
 app.use(cookieParser())
-app.set('trust proxy', 1) // trust first proxy
+// app.set('trust proxy', 1) // trust first proxy
 app.use(session({
     name: 'session',
-    keys: ['key1', 'key2']
+    keys: ['key'],
+    maxAge: 5 * 60 * 1000
 }))
 app.use(passport.initialize())
 app.use(passport.session())
 
-passport.use(new LocalStrategy((username, password, done) => {
-    const promise = users.findOne(username, md5(password))
+passport.use(new LocalStrategy({
+    usernameField: 'username',
+    passwordField: 'password',
+    passReqToCallback: true,
+}, (username, password, done) => {
+    const promise = users.checkLogin(username, md5(password))
     promise.then(
-        result => {
-            done(null, result)
-        },
-        error => {
-            done(null, error)
-        }
+        result => done(null, result),
+        error => done(error)
     )
 }))
 
@@ -46,8 +46,17 @@ passport.serializeUser((user, done) => {
 })
 
 passport.deserializeUser((username, done) => {
-    done(null, {username: username})
+    const promise = users.findOne(username)
+    promise.then(
+        result => done(null, result),
+        error => done(error)
+    )
 })
+
+const errorHandler = (err, req, res) => {
+    console.error(err.message)
+    console.error(err.stack)
+}
 
 handlebars.registerHelper('ifCond', (v1, v2, options) => {
     if (v1 === v2) {
@@ -59,25 +68,26 @@ handlebars.registerHelper('ifCond', (v1, v2, options) => {
 const loginHandler = passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/login'
+}, (req, res) => {
+    req.session.username = req.body.username
+    req.session.password = req.body.password
+    if (req.body.remember) {
+        req.session.rememberme = req.body.rememberme
+        req.session.cookie.maxAge = 10 * 60 * 1000
+    } else {
+        req.session.rememberme = false    
+        req.session.cookie.expires = false
+    }
 })
 
 const needAuthentication = (req, res, next) => {
-    if (req.isAuthenticated()) {
-        next()
-    } else {
-        res.redirect('/login')
-    }
-}
-
-function errorHandler(err, req, res) {
-    console.error(err.message)
-    console.error(err.stack)
+    req.isAuthenticated() ? next() : res.redirect('/login')
 }
 
 app.all('/add', needAuthentication)
-app.all('/delete', needAuthentication)
-app.all('/complete', needAuthentication)
-app.all('/change', needAuthentication)
+app.all('/delete/*', needAuthentication)
+app.all('/complete/*', needAuthentication)
+app.all('/change/*', needAuthentication)
 
 app.get('/', (req, res) => {
     tasks.list((err, data) => {
@@ -134,7 +144,7 @@ app.get('/login', (req, res) => {
 app.post('/login', loginHandler)
 
 app.get('/logout', (req, res) => {
-    res.logout()
+    req.logOut()
     res.redirect('/login')
 })
 

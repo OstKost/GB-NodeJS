@@ -4,17 +4,25 @@ const {
 } = require('./config');
 
 const Users = {
-    findOne: (username, password) => new Promise((resolve, reject) => {
+    checkLogin: (username, password) => new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
             if (err) reject(err);
-            let user = {}
-            const sql = mysql.format("SELECT * FROM ?? WHERE ??=? AND ??=?",
-             ['users', 'username', username, 'password', password]);
-            connection.query(sql, (err, rows) => {
-                user = rows[0]                
-                if (err) reject(err)                
-                resolve(user)
-            })            
+            const sql = mysql.format("SELECT * FROM users WHERE username=? AND password=?", [username, password])
+            connection.query(sql, (err, results) => {
+                if (err || !results) reject(err)              
+                resolve(results[0])
+            })
+        })
+    }),
+
+    findOne: username => new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) reject(err)
+            const sql = mysql.format("SELECT 'username' FROM users WHERE username=?", [username])
+            connection.query(sql, (err, results) => {
+                if (err || !results) reject(err)              
+                resolve(results[0])
+            })
         })
     })
 }
