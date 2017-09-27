@@ -36,7 +36,7 @@ passport.use(new LocalStrategy({
 }, (username, password, done) => {
     const promise = users.checkLogin({
         username,
-        password: md5(password)
+        password: md5(password).toLowerCase()
     })
     promise.then(
         result => done(null, result),
@@ -79,11 +79,21 @@ app.all('/delete/*', needAuthentication)
 app.all('/complete/*', needAuthentication)
 app.all('/change/*', needAuthentication)
 
+// Хочу проверить куки и сессии
+app.all('/*', (req, res, next) => {
+    console.dir("req.headers[cookie]: " + req.headers['cookie'])
+    console.dir("req.cookies: " + JSON.stringify(req.cookies))
+    console.dir("req.session: " + JSON.stringify(req.session))
+    console.dir("###")
+    next();
+})
+
 app.get('/', (req, res) => {
-    tasks.list((err, data) => {
+    tasks.list((err, data) => {        
         res.render('index', {
             err: err,
-            list: data
+            list: data,
+            user: req.session.passport && req.session.passport.user ? req.session.passport.user : 'Sorry, you are not logged in.'
         })
     })
 })
@@ -92,7 +102,8 @@ app.post('/add', (req, res) => {
     tasks.add(req.body, (err, data) => {
         res.render('index', {
             err: err,
-            list: data
+            list: data,
+            user: req.session.passport && req.session.passport.user ? req.session.passport.user : 'Sorry, you are not logged in.'
         })
     })
 })
@@ -101,7 +112,8 @@ app.get('/complete/:id', (req, res) => {
     tasks.complete(req.params.id, req.query, (err, data) => {
         res.render('index', {
             err: err,
-            list: data
+            list: data,
+            user: req.session.passport && req.session.passport.user ? req.session.passport.user : 'Sorry, you are not logged in.'
         })
     })
 })
@@ -110,7 +122,8 @@ app.get('/change/:id', (req, res) => {
     tasks.change(req.params.id, req.query, (err, data) => {
         res.render('index', {
             err: err,
-            list: data
+            list: data,
+            user: req.session.passport && req.session.passport.user ? req.session.passport.user : 'Sorry, you are not logged in.'
         })
     })
 })
@@ -119,34 +132,48 @@ app.get('/delete/:id', (req, res) => {
     tasks.delete(req.params.id, (err, data) => {
         res.render('index', {
             err: err,
-            list: data
+            list: data,
+            user: req.session.passport && req.session.passport.user ? req.session.passport.user : 'Sorry, you are not logged in.'
         })
     })
 })
 
 app.get('/login', (req, res) => {
     res.render('login', {
-        username: req.session.username || '',
-        password: req.session.password || '',
-        rememberme: req.session.rememberme || false
+        username: req.cookies.username || '',
+        password: req.cookies.password || '',
+        remember: req.cookies.remember || null,
     })
 })
 
+// res.setHeader("Set-Cookie", [`username=${req.body.username}`, `password=${req.body.password}`, `rememberme=${req.body.rememberme}`])
+const setCookies = (req, res, next) => {
+    if (req.body.remember === 'on') {
+        res.cookie('username', req.body.username, {
+            maxAge: 24 * 60 * 60 * 1000,
+            httpOnly: true
+        })
+        res.cookie('password', req.body.password, {
+            maxAge: 24 * 60 * 60 * 1000,
+            httpOnly: true
+        })
+        res.cookie('remember', req.body.remember, {
+            maxAge: 24 * 60 * 60 * 1000,
+            httpOnly: true
+        })
+    } else {
+        res.clearCookie('username')
+        res.clearCookie('password')
+        res.clearCookie('remember')
+    }
+    next()
+}
+
+app.post('/login', setCookies)
 app.post('/login', passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: '/login'
-    }),
-    (req, res) => {
-        req.session.username = req.body.username
-        req.session.password = req.body.password
-        if (req.body.remember) {
-            req.session.rememberme = req.body.rememberme
-            req.session.cookie.maxAge = 10 * 60 * 1000
-        } else {
-            req.session.rememberme = false
-            req.session.cookie.expires = false
-        }
-    })
+    successRedirect: '/',
+    failureRedirect: '/login'
+}))
 
 app.get('/logout', (req, res) => {
     req.logOut()

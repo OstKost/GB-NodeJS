@@ -7,7 +7,7 @@ const Tasks = {
     list: (callback) => {
         pool.getConnection((err, connection) => {
             if (err) console.log(err)
-            const sql = mysql.format("SELECT * FROM ??", ['tasks'])
+            const sql = "SELECT * FROM tasks"
             connection.query(sql, (err, rows) => {
                 connection.release()
                 callback(err, rows)
