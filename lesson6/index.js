@@ -32,9 +32,12 @@ app.use(passport.session())
 passport.use(new LocalStrategy({
     usernameField: 'username',
     passwordField: 'password',
-    passReqToCallback: true,
+    // passReqToCallback: true,
 }, (username, password, done) => {
-    const promise = users.checkLogin(username, md5(password))
+    const promise = users.checkLogin({
+        username,
+        password: md5(password)
+    })
     promise.then(
         result => done(null, result),
         error => done(error)
@@ -46,7 +49,9 @@ passport.serializeUser((user, done) => {
 })
 
 passport.deserializeUser((username, done) => {
-    const promise = users.findOne(username)
+    const promise = users.findOne({
+        username
+    })
     promise.then(
         result => done(null, result),
         error => done(error)
@@ -63,21 +68,6 @@ handlebars.registerHelper('ifCond', (v1, v2, options) => {
         return options.fn(this);
     }
     return options.inverse(this);
-})
-
-const loginHandler = passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login'
-}, (req, res) => {
-    req.session.username = req.body.username
-    req.session.password = req.body.password
-    if (req.body.remember) {
-        req.session.rememberme = req.body.rememberme
-        req.session.cookie.maxAge = 10 * 60 * 1000
-    } else {
-        req.session.rememberme = false    
-        req.session.cookie.expires = false
-    }
 })
 
 const needAuthentication = (req, res, next) => {
@@ -136,16 +126,31 @@ app.get('/delete/:id', (req, res) => {
 
 app.get('/login', (req, res) => {
     res.render('login', {
-        err: null,
-        list: null
+        username: req.session.username || '',
+        password: req.session.password || '',
+        rememberme: req.session.rememberme || false
     })
 })
 
-app.post('/login', loginHandler)
+app.post('/login', passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/login'
+    }),
+    (req, res) => {
+        req.session.username = req.body.username
+        req.session.password = req.body.password
+        if (req.body.remember) {
+            req.session.rememberme = req.body.rememberme
+            req.session.cookie.maxAge = 10 * 60 * 1000
+        } else {
+            req.session.rememberme = false
+            req.session.cookie.expires = false
+        }
+    })
 
 app.get('/logout', (req, res) => {
     req.logOut()
-    res.redirect('/login')
+    res.redirect('/')
 })
 
 app.use(errorHandler)
