@@ -15,14 +15,14 @@
         .loginForm div {
             margin: 3px;
         }
-    </style>
+    </style>    
 </head>
 
 <body>
     <div class="app">
         <div class="loginForm">
             Войти в систему:
-            <form action="/login" method="POST">
+            <form action="/{{type}}" method="POST">
                 <div>
                     Логин:
                     <input type="username" name="username" id="username" value={{username}}>
@@ -39,7 +39,9 @@
                     <input type="submit" value="Войти">
                 </div>
             </form>
-        </div>       
+            <br>
+            <a href="/login/vk">Войти через ВК</a>
+        </div>
 </body>
 
 </html>
